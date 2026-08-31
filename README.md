@@ -1,7 +1,8 @@
 # `useQuery({ enabled: false })` never lets an SSR render finish (solid-query 6.0.0-rc.1)
 
-> **Filed upstream as TanStack/query#TBD** — go there for discussion and status. This repo is only
-> the runnable reproduction.
+> **Filed upstream as [TanStack/query#11348](https://github.com/TanStack/query/issues/11348)** — go
+> there for the discussion, any maintainer response, and the current status. This repo is only the
+> runnable reproduction.
 
 A `useQuery` with `enabled: false`, whose `.data` is read during render, stops an SSR render from
 ever finishing at `@tanstack/solid-query` 6.0.0-rc.1. It completes at 6.0.0-rc.0 with
@@ -54,7 +55,8 @@ removed", and the strip-the-promise PR
 [#10923](https://github.com/TanStack/query/pull/10923) was closed unmerged.
 
 So this is the same user-visible failure returning on the v6 rc line through a different
-implementation.
+implementation — which is why [#11348](https://github.com/TanStack/query/issues/11348) is a new issue
+rather than a comment on #10907.
 
 ## Mechanism
 
