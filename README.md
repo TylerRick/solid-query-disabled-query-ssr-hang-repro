@@ -58,8 +58,8 @@ implementation.
 
 ## Mechanism
 
-In [packages/solid-query/src/useBaseQuery.ts](https://github.com/TanStack/query/blob/main/packages/solid-query/src/useBaseQuery.ts),
-`computeData()` — the derive of the single `createProjection` that is the data node — ends:
+In [packages/solid-query/src/useBaseQuery.ts](https://github.com/TanStack/query/blob/2222f61f9b718e41d53a2eabc8b81999b248c04e/packages/solid-query/src/useBaseQuery.ts), `computeData()` — the derive of the single
+`createProjection` that is the data node — ends:
 
 ```ts
 if (state.data !== undefined) return wrap(state.data)
@@ -72,14 +72,19 @@ if (isEnabled()) {
 return NEVER
 ```
 
-where `const NEVER: Promise<never> = new Promise(noop)` can never settle. Its docblock says the
-parking is intentional — it suspends the reader into the nearest `<Loading>` until the query starts
-fetching, "at which point the version bump re-runs the compute".
+where [`const NEVER: Promise<never> = new Promise(noop)`](https://github.com/TanStack/query/blob/2222f61f9b718e41d53a2eabc8b81999b248c04e/packages/solid-query/src/useBaseQuery.ts#L38) can never settle. Its docblock
+([L30-L38](https://github.com/TanStack/query/blob/2222f61f9b718e41d53a2eabc8b81999b248c04e/packages/solid-query/src/useBaseQuery.ts#L30-L38)) states the parking is intentional client behaviour: it suspends the
+reader into the nearest `<Loading>` until the query starts fetching, "at which point the version bump
+re-runs the compute".
 
-That is right on the client. On the server there is no later: the render has to finish, and nothing
-will enable the query or write the cache before it does. The three earlier `return NEVER` guards are
-each gated (`!isServer && hydrating`, `!primed()`, `isRestoring()`) and `observer.setOptions` is
-gated `!isServer` — but this final disabled path has no `isServer` branch.
+On the server there is no later: the render has to finish, and nothing will enable the query or write
+the cache before it does. The three earlier `return NEVER` guards are each gated
+([`!isServer && hydrating`](https://github.com/TanStack/query/blob/2222f61f9b718e41d53a2eabc8b81999b248c04e/packages/solid-query/src/useBaseQuery.ts#L497), [`!primed()`](https://github.com/TanStack/query/blob/2222f61f9b718e41d53a2eabc8b81999b248c04e/packages/solid-query/src/useBaseQuery.ts#L509), [`isRestoring()`](https://github.com/TanStack/query/blob/2222f61f9b718e41d53a2eabc8b81999b248c04e/packages/solid-query/src/useBaseQuery.ts#L519))
+and `observer.setOptions` is gated `!isServer` — but the final disabled
+[`return NEVER`](https://github.com/TanStack/query/blob/2222f61f9b718e41d53a2eabc8b81999b248c04e/packages/solid-query/src/useBaseQuery.ts#L534) has no `isServer` branch.
+
+Permalinks are pinned to the `@tanstack/solid-query@6.0.0-rc.1` tag, commit `2222f61f9b71`, whose
+`src/` is byte-identical to the published tarball.
 
 ## Environment
 
